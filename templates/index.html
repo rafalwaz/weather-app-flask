@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="weather-box">
+        <h1>Witaj na stronie pogodowej!</h1>
+        <p>Wpisz miasto, aby sprawdzić pogodę:</p>
+
+        <form method="POST">
+            <input type="text" name="city" id="city" placeholder="Miasto" required>
+            <button type="submit">Sprawdź pogodę</button>
+        </form>
+        {% if dane_pogodowe %}
+        <div id="weather" style="margin-top: 20px;">
+            {% if dane_pogodowe.cod == 200%}
+            <h2>Pogoda w: {{dane_pogodowe.name}}</h2>
+            <img src="http://openweathermap.org/img/wn/{{dane_pogodowe.weather[0].icon}}@2x.png" alt="ikona pogody">
+            <p>Temperatura wynosi: <b>{{ dane_pogodowe.main.temp }} °C</b></p>
+            <p>Odczuwalna to: {{ dane_pogodowe.main.feels_like }} °C</p>
+            {% elif dane_pogodowe.cod == '404' %}
+            <p style="color: #ff9a44;">Ups! Nie znaleźliśmy takiego miasta. Sprawdź literówkę!</p>
+            {% else %}
+            <p style="color: #ff9a44;">Wystąpił problem: {{ dane_pogodowe.message }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if pelna_historia %}
+        <div
+            style="margin-top: 30px; font-size: 14px; opacity:0.9; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
+            <h4 style="margin-bottom: 10px;">Ostatnio sprawdzane:</h4>
+            <ul style="list-style-type: none; padding: 0;">
+                {% for wpis in pelna_historia %}
+                <li style="margin-bottom: 5px;">{{ wpis.miasto }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>
